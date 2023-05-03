@@ -1,5 +1,5 @@
 {
-  "name": "cubejs-web-playground",
+  "name": "cubejs-playground-web",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
