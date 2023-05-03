@@ -28,9 +28,9 @@ function Report() {
     ],
   });
 
-  if (!resultSet) {
-    return <p>Loading...</p>;
-  }
+  const { resultSet: ddResultSet } = useCubeQuery(drillDownQuery, {
+    skip: !drillDownQuery,
+  });
 
   const handleBarClick = (event, yValues) => {
     if (event.xValues != null) {
@@ -43,35 +43,50 @@ function Report() {
     }
   };
 
-  // defined dimensions will be assigned to `x` key from resultSet.chartPivot
-  // measures can be accessed out from `seriesNames`
-
   // LOG DRILLDOWN QUERY
   console.log(drillDownQuery);
   return (
     <>
       <p>Bar Chart</p>
-      <ResponsiveContainer width="100%" height={300}>
-        <BarChart data={resultSet.chartPivot()}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="x" />
-          <YAxis />
-          <RechartsTooltip />
-          <Legend />
+      {resultSet && (
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart data={resultSet.chartPivot()}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="x" />
+            <YAxis />
+            <RechartsTooltip />
+            <Legend />
 
-          {resultSet.seriesNames().map(({ key, yValues }) => {
-            return (
-              <Bar
-                key={key}
-                stackId="a"
-                dataKey={key}
-                fill={"#fcb953"}
-                onClick={(event) => handleBarClick(event, yValues)}
-              />
-            );
-          })}
-        </BarChart>
-      </ResponsiveContainer>
+            {resultSet.seriesNames().map(({ key, yValues }) => {
+              return (
+                <Bar
+                  key={key}
+                  stackId="a"
+                  dataKey={key}
+                  fill={"#fcb953"}
+                  onClick={(event) => handleBarClick(event, yValues)}
+                />
+              );
+            })}
+          </BarChart>
+        </ResponsiveContainer>
+      )}
+      {ddResultSet && (
+        <table>
+          <tr>
+            {ddResultSet.tableColumns().map((d) => (
+              <th>{d.title}</th>
+            ))}
+          </tr>
+          {Object.keys(ddResultSet.tablePivot()).map((d) => (
+            <tr>
+              {Object.values(ddResultSet.tablePivot()[d]).map((v) => (
+                <td>{v}</td>
+              ))}
+            </tr>
+          ))}
+        </table>
+      )}
     </>
   );
 }
