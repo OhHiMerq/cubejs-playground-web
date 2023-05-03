@@ -1,23 +1,18 @@
-import logo from './logo.svg';
-import './App.css';
+import { CubeProvider } from "@cubejs-client/react";
+import cubejs from "@cubejs-client/core";
+import Report from "./components/Report";
+import "./App.css";
 
 function App() {
+  const cubejsApi = cubejs("token", {
+    apiUrl: "http://localhost:4000/cubejs-api/v1",
+  });
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <CubeProvider cubejsApi={cubejsApi}>
+        <Report />
+      </CubeProvider>
     </div>
   );
 }
